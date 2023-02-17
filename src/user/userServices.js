@@ -26,7 +26,6 @@ module.exports.createUserDBService = (userDetails) => {
                userModelData.password = encrypted;
                
                userModelData.save(function resultHandle(error, result) {
-               
                   if (error) {
                      reject({status: false,msg: "Ha habido un error al momento de crear el usuario"});
                } else {
