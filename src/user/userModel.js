@@ -21,6 +21,7 @@ var userSchema = new Schema({
             },
             message: 'El correo electrónico ya está registrado'
           }
+          
     },
     password: {
         type: String,
