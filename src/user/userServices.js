@@ -13,36 +13,32 @@ module.exports.createUserDBService = (userDetails) => {
          
             if(result !=undefined &&  result !=null) {
 
-               resolve({status: true,msg: "El email  ya esta registrado"});
-               
-               if( result.email == userDetails.email) {
-                  resolve({status: true,msg: "El email '" + userDetails.email + "' ha sido encontrado dentro del registro de usuarios"});
-               }
+               resolve({status: true,msg: "El email ya esta asignado a un usuario"});
             }
             else {
-               reject({status: false,msg: "Detalles de usuario invalido"});
+               var userModelData = new userModel();
+
+               userModelData.firstname = userDetails.firstname;
+               userModelData.lastname = userDetails.lastname;
+               userModelData.email = userDetails.email;
+               userModelData.password = userDetails.password;
+               var encrypted = encryptor.encrypt(userDetails.password);
+               userModelData.password = encrypted;
+               
+               userModelData.save(function resultHandle(error, result) {
+               
+                  if (error) {
+                     reject({status: false,msg: "Ha habido un error al momento de crear el usuario"});
+               } else {
+                     resolve({status: true,msg: "El usuario ha sido creado correctamente"});
+               }
+               });
             }
          }
       });
    });
 }
-var userModelData = new userModel();
 
-userModelData.firstname = userDetails.firstname;
-userModelData.lastname = userDetails.lastname;
-userModelData.email = userDetails.email;
-userModelData.password = userDetails.password;
-var encrypted = encryptor.encrypt(userDetails.password);
-userModelData.password = encrypted;
-
-userModelData.save(function resultHandle(error, result) {
-
-    if (error) {
-        reject(false);
-    } else {
-        resolve(true);
-    }
-});
 module.exports.deleteUserDBService = (userDetails) => {
 
    return new Promise(function myFn(resolve, reject)  {
