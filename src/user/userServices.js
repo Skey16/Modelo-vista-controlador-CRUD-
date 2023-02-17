@@ -5,7 +5,7 @@ var encryptor = require('simple-encryptor')(key);
 module.exports.createUserDBService = (userDetails) => {
 
    return new Promise(function myFn(resolve, reject)  {
-      userModel.findOne({ email: userDetails.email},function getresult(errorvalue, result) {
+      userModel.findOne({ email: userDetails.email},function getResult(errorvalue, result) {
          if(errorvalue) {
             reject({status: false, msg: "Datos Invalidos"});
          }
@@ -13,7 +13,7 @@ module.exports.createUserDBService = (userDetails) => {
          
             if(result !=undefined &&  result !=null) {
 
-               resolve({status: true,msg: "El email ya esta asignado a un usuario"});
+               resolve({status: false,msg: "El email ya esta asignado a un usuario"});
             }
             else {
                var userModelData = new userModel();
@@ -30,12 +30,13 @@ module.exports.createUserDBService = (userDetails) => {
                   if (error) {
                      reject({status: false,msg: "Ha habido un error al momento de crear el usuario"});
                } else {
-                     resolve({status: true,msg: "El usuario ha sido creado correctamente"});
+                     resolve({status: true,msg: "El usuario ha sido creado"});
                }
                });
+      
             }
          }
-      });
+      })
    });
 }
 
