@@ -26,6 +26,7 @@ module.exports.createUserDBService = (userDetails) => {
                userModelData.password = encrypted;
                
                userModelData.save(function resultHandle(error, result) {
+               
                   if (error) {
                      reject({status: false,msg: "Ha habido un error al momento de crear el usuario"});
                } else {
@@ -70,33 +71,32 @@ module.exports.deleteUserDBService = (userDetails) => {
    });
 }
 
-module.exports.updateUserDBService = (userDetails) => {
-
+module.exports.updateUserDBService = (userDetails)=>{
    return new Promise(function myFn(resolve, reject)  {
-      userModel.findOne({ email: userDetails.email},function getresult(errorvalue, result) {
+      userModel.findOneAndUpdate(
+         {email: userDetails.email},
+         {$set:{
+            password: encryptor.encrypt(userDetails.password),
+            firstname: userDetails.firstname,
+            lastname: userDetails.lastname
+            }
+         },
+         {new: true},
+         function getresult(errorvalue, result) {
          if(errorvalue) {
             reject({status: false, msg: "Datos Invalidos"});
          }
          else {
-
             if(result !=undefined &&  result !=null) {
-               console.log(result);
-               if( result.email == userDetails.email) {
-                  
-                  
-                    var encrypted = encryptor.encrypt(result.password);
-                    userModel.updateOne({ email: userDetails.email},{password:encrypted});
-                     if (err) return handleError(err);
+               
+
+               if(result.email = userDetails.email) {
                   resolve({status: true,msg: "El usuario ha sido modificado"});
-               }
-               else {
-                  reject({status: false,msg: "Email no encontrado"});
                }
             }
             else {
-               reject({status: false,msg: "Detalles de usuario invalido"});
+               reject({status: false,msg: "Datos de usuario invalido"});
             }
-           
          }
       });
    });
