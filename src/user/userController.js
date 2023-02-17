@@ -10,8 +10,9 @@ var createUserControllerFunc = async (req, res) =>  {
         } else {
             res.send({ "status": false, "message": result.msg });
         }
-    } catch(err) {
-        console.log(err);
+    } catch (error) {
+        console.log(error);
+        res.send({ "status": false, "message": error.msg });
     }
 }
 
