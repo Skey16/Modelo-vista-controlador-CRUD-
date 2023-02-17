@@ -13,7 +13,14 @@ var userSchema = new Schema({
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        validate: {
+            validator: function(v) {
+              return this.model('user').findOne({ email: v })
+                .then(user => !user); // Retorna false si el email ya existe en la base de datos
+            },
+            message: 'El correo electrónico ya está registrado'
+          }
     },
     password: {
         type: String,
@@ -26,5 +33,7 @@ var userSchema = new Schema({
 
 });
 
-// Collection "users"
+
 module.exports = mongoose.model('users', userSchema);
+
+
