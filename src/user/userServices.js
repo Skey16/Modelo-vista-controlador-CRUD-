@@ -84,8 +84,10 @@ module.exports.updateUserDBService = (userDetails) => {
                console.log(result);
                if( result.email == userDetails.email) {
                   
-                  userModel.updateOne({ email: userDetails.email },userDetails, function (err) {
+                  var encrypted = encryptor.encrypt(result.password);
+                  userModel.updateOne({ email: userDetails.email },{password:encrypted}, function (err) {
                      if (err) return handleError(err);
+                     
                    });
                    
                   resolve({status: true,msg: "El usuario ha sido modificado"});
