@@ -4,27 +4,45 @@ var encryptor = require('simple-encryptor')(key);
 
 module.exports.createUserDBService = (userDetails) => {
 
-   return new Promise(function myFn(resolve, reject) {
-       var userModelData = new userModel();
+   return new Promise(function myFn(resolve, reject)  {
+      userModel.findOne({ email: userDetails.email},function getresult(errorvalue, result) {
+         if(errorvalue) {
+            reject({status: false, msg: "Datos Invalidos"});
+         }
+         else {
+         
+            if(result !=undefined &&  result !=null) {
 
-       userModelData.firstname = userDetails.firstname;
-       userModelData.lastname = userDetails.lastname;
-       userModelData.email = userDetails.email;
-       userModelData.password = userDetails.password;
-       var encrypted = encryptor.encrypt(userDetails.password);
-       userModelData.password = encrypted;
-
-       userModelData.save(function resultHandle(error, result) {
-
-           if (error) {
-               reject(false);
-           } else {
-               resolve(true);
-           }
-       });
+               resolve({status: true,msg: "El email  ya esta registrado"});
+               
+               if( result.email == userDetails.email) {
+                  resolve({status: true,msg: "El email '" + userDetails.email + "' ha sido encontrado dentro del registro de usuarios"});
+               }
+            }
+            else {
+               reject({status: false,msg: "Detalles de usuario invalido"});
+            }
+         }
+      });
    });
 }
+var userModelData = new userModel();
 
+userModelData.firstname = userDetails.firstname;
+userModelData.lastname = userDetails.lastname;
+userModelData.email = userDetails.email;
+userModelData.password = userDetails.password;
+var encrypted = encryptor.encrypt(userDetails.password);
+userModelData.password = encrypted;
+
+userModelData.save(function resultHandle(error, result) {
+
+    if (error) {
+        reject(false);
+    } else {
+        resolve(true);
+    }
+});
 module.exports.deleteUserDBService = (userDetails) => {
 
    return new Promise(function myFn(resolve, reject)  {
